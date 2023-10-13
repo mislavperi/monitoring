@@ -15,50 +15,50 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
     command:
-      - '--path.procfs=/host/proc'
-      - '--path.rootfs=/rootfs'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - "--path.procfs=/host/proc"
+      - "--path.rootfs=/rootfs"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
     ports:
       - 9100:9100
     networks:
       - monitoring
-  
+
   prometheus:
     image: prom/prometheus:v2.47.0
     user: "1002"
     environment:
-     - PUID=1002
-     - PGID=1002
+      - PUID=1002
+      - PGID=1002
     container_name: prometheus
     restart: unless-stopped
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - /home/monitoring/prometheus:/prometheus
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml' 
-      - '--storage.tsdb.path=/prometheus' 
-      - '--web.console.libraries=/etc/prometheus/console_libraries' 
-      - '--web.console.templates=/etc/prometheus/consoles' 
-      - '--web.enable-lifecycle' 
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--web.enable-lifecycle"
     ports:
       - 9090:9090
     networks:
       - monitoring
-  
+
   grafana:
     image: grafana/grafana:10.1.2-ubuntu
-    user: "1002"
+    user: "0"
     container_name: grafana
     ports:
-     - 3000:3000
+      - 3000:3000
     restart: unless-stopped
     volumes:
       - /home/monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
       - /home/monitoring/grafana:/var/lib/grafana
     networks:
       - monitoring
-  
+
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:v0.47.2
     container_name: cadvisor
